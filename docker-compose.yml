@@ -1,0 +1,46 @@
+services:
+  build:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    container_name: haskelito-build
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    environment:
+      - NODE_ENV=development
+    command: sh -c "npm ci && npm run build && npm run test"
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    container_name: haskelito-test
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    environment:
+      - NODE_ENV=test
+    command: npm run test -- --watch
+    stdin_open: true
+    tty: true
+
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    container_name: haskelito-dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    environment:
+      - NODE_ENV=development
+    command: sh -c "npm ci && sh"
+    stdin_open: true
+    tty: true

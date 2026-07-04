@@ -17,6 +17,14 @@ npm run build
 node examples/demo.js
 ```
 
+## Container Quick Start
+
+```bash
+docker compose run --rm build
+docker compose run --rm test
+docker compose run --rm dev
+```
+
 ## Root Import
 
 ```js
@@ -157,6 +165,92 @@ const total = foldMap(Sum, firstFive)
 npm test
 npm run build
 ```
+
+## Release
+
+Before publishing:
+
+```bash
+npm run build
+npm publish
+```
+
+This package publishes the built `dist` output only, so make sure the build succeeds first.
+
+## Containers (Docker Compose)
+
+This repository includes three Docker Compose services in [docker-compose.yml](./docker-compose.yml) for build, test, and interactive development workflows.
+
+### Prerequisites
+
+- Docker and Docker Compose installed
+- Run commands from the repository root
+
+### Services
+
+#### `build`
+
+Purpose: run a CI-style one-shot verification.
+
+What it does:
+
+- Installs dependencies with `npm ci`
+- Builds the package with `npm run build`
+- Runs tests once with `npm run test`
+
+Run it:
+
+```bash
+docker compose run --rm build
+```
+
+#### `test`
+
+Purpose: run tests in watch mode during development.
+
+What it does:
+
+- Starts `npm run test -- --watch`
+- Keeps an interactive TTY open for watch mode output
+
+Run it:
+
+```bash
+docker compose run --rm test
+```
+
+#### `dev`
+
+Purpose: open an interactive shell inside the dev container.
+
+What it does:
+
+- Installs dependencies with `npm ci`
+- Opens a shell (`sh`) in `/app`
+
+Run it:
+
+```bash
+docker compose run --rm dev
+```
+
+Inside the shell, common commands are:
+
+```bash
+npm test
+npm run build
+npm run lint
+```
+
+### Shared Container Setup
+
+All three services:
+
+- Mount the repository to `/app`
+- Use `/app/node_modules` as a container-managed volume
+- Run with `/app` as the working directory
+
+This keeps dependency installation isolated in the container while still using live source files from your local workspace.
 
 ## Functional Standards
 

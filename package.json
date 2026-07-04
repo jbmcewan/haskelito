@@ -1,9 +1,33 @@
 {
   "name": "haskelito",
   "version": "0.1.0",
+  "description": "Small functional programming utilities for JavaScript",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jbmcewan/haskelito.git"
+  },
+  "homepage": "https://github.com/jbmcewan/haskelito#readme",
+  "bugs": {
+    "url": "https://github.com/jbmcewan/haskelito/issues"
+  },
+  "keywords": [
+    "functional",
+    "fp",
+    "maybe",
+    "either",
+    "validation",
+    "reader",
+    "monad",
+    "monoid"
+  ],
+  "author": "J.B.McEwan",
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js",
