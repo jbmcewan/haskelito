@@ -4,7 +4,7 @@ FROM node:lts-alpine AS builder
 WORKDIR /app
 
 # Install required tooling for development workflows
-RUN apk add --no-cache bash git
+RUN apk add --no-cache bash git ripgrep
 
 # Pin npm version for deterministic installs in devcontainers/CI
 RUN npm install -g npm@11.18.0
@@ -28,7 +28,7 @@ FROM node:lts-alpine AS runtime
 WORKDIR /app
 
 # Install required tooling for devcontainer shells
-RUN apk add --no-cache bash git
+RUN apk add --no-cache bash git ripgrep
 
 # Pin npm version for interactive devcontainer usage
 RUN npm install -g npm@11.18.0
