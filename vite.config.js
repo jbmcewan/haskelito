@@ -5,7 +5,7 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     lib: {
-      entry: resolve(__dirname, 'src/index.js'),
+      entry: resolve(__dirname, 'src/index.ts'),
       fileName: (format, entryName) => `${entryName}.${format === 'es' ? 'js' : 'cjs'}`
     },
     rollupOptions: {

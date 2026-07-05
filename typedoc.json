@@ -1,0 +1,18 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "tsconfig": "tsconfig.build.json",
+  "out": "docs/api",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "intentionallyNotExported": [
+    "EitherModule",
+    "MaybeModule",
+    "ReaderModule",
+    "ValidationModule",
+    "EffectValue"
+  ],
+  "readme": "none",
+  "name": "haskelito API"
+}
