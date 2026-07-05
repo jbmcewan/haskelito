@@ -13,9 +13,27 @@ type ReaderModule = ((run: (env: unknown) => unknown) => ReaderValue<unknown, un
   of: <T>(value: T) => ReaderValue<unknown, T>
   /** Returns the full environment as the value. */
   ask: <TEnv>() => ReaderValue<TEnv, TEnv>
+  /** Projects a value from the environment. */
+  asks: <TEnv, TValue>(select: (env: TEnv) => TValue) => ReaderValue<TEnv, TValue>
+  /** Runs a reader against a transformed environment. */
+  local: <TOuterEnv, TInnerEnv, TValue>(
+    transform: (env: TOuterEnv) => TInnerEnv,
+    reader: { run: (env: TInnerEnv) => TValue }
+  ) => ReaderValue<TOuterEnv, TValue>
 }
 
-/** Reader monad for dependency injection via an environment value. */
+/**
+ * Reader monad for dependency injection via an environment value.
+ * @example
+ * const readBaseUrl = Reader.asks((env) => env.baseUrl)
+ *
+ * readBaseUrl.run({ baseUrl: 'https://example.test' })
+ *
+ * const versioned = Reader.local(
+ *   (env) => ({ baseUrl: `${env.baseUrl}/v1` }),
+ *   Reader((env) => env.baseUrl)
+ * )
+ */
 export const Reader: ReaderModule = Object.freeze(
   Object.assign(
     (run: (env: unknown) => unknown) =>
@@ -28,7 +46,17 @@ export const Reader: ReaderModule = Object.freeze(
       }),
     {
       of: <T>(value: T) => Reader(() => value) as ReaderValue<unknown, T>,
-      ask: <TEnv>() => Reader((env: unknown) => env as TEnv) as ReaderValue<TEnv, TEnv>
+      ask: <TEnv>() => Reader((env: unknown) => env as TEnv) as ReaderValue<TEnv, TEnv>,
+      asks: <TEnv, TValue>(select: (env: TEnv) => TValue) =>
+        Reader((env: unknown) => select(env as TEnv)) as ReaderValue<TEnv, TValue>,
+      local: <TOuterEnv, TInnerEnv, TValue>(
+        transform: (env: TOuterEnv) => TInnerEnv,
+        reader: { run: (env: TInnerEnv) => TValue }
+      ) =>
+        Reader((env: unknown) => reader.run(transform(env as TOuterEnv))) as ReaderValue<
+          TOuterEnv,
+          TValue
+        >
     }
   )
 ) as ReaderModule

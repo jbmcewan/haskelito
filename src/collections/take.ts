@@ -6,7 +6,11 @@ type IteratorLike<T> = {
   next: () => IteratorResult<T>
 }
 
-/** Takes `count` elements from a generator factory. */
+/**
+ * Takes `count` elements from a generator factory.
+ * @example
+ * take(5, Stream.iterate((value) => value + 2, 0))
+ */
 export const take = curry((count: number, generatorFactory: () => IteratorLike<unknown>) => {
   if (!Number.isInteger(count) || count < 0) {
     throw new TypeError('take expects count to be a non-negative integer')

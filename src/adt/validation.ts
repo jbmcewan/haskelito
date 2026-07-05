@@ -32,7 +32,12 @@ export type ValidationModule = Readonly<{
   of: <E, T>(value: T) => ValidationValue<E, T>
 }>
 
-/** Validation constructors and applicative helpers. */
+/**
+ * Validation constructors and applicative helpers.
+ * @example
+ * Validation.Success((value) => value * 2).ap(Validation.Success(4))
+ * Validation.Failure(['email is required'])
+ */
 export const Validation: ValidationModule = Object.freeze({
   Success: <E, T>(value: T) =>
     Object.freeze({

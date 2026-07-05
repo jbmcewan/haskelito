@@ -18,6 +18,13 @@ describe('Reader laws', () => {
         reader.map(add1).map(times2).run({ base: 2 })
       )
     })
+
+    test('asks is equivalent to ask().map(select)', () => {
+      const env = { base: 2, factor: 4 }
+      const select = (current: typeof env) => current.base * current.factor
+
+      expect(Reader.asks(select).run(env)).toBe(Reader.ask<typeof env>().map(select).run(env))
+    })
   })
 
   describe('Monad', () => {
@@ -34,6 +41,20 @@ describe('Reader laws', () => {
       expect(m.flatMap(Reader.of).run(env)).toBe(m.run(env))
       expect(m.flatMap(readerF).flatMap(readerG).run(env)).toBe(
         m.flatMap((x: number) => readerF(x).flatMap(readerG)).run(env)
+      )
+    })
+  })
+
+  describe('Environment helpers', () => {
+    test('local satisfies identity and composition', () => {
+      const reader = Reader((env: unknown) => (env as { base: number }).base * 2)
+      const env = { base: 3 }
+      const addBase = (current: { base: number }) => ({ base: current.base + 1 })
+      const doubleBase = (current: { base: number }) => ({ base: current.base * 2 })
+
+      expect(Reader.local((current: typeof env) => current, reader).run(env)).toBe(reader.run(env))
+      expect(Reader.local(doubleBase, Reader.local(addBase, reader)).run(env)).toBe(
+        Reader.local((current: typeof env) => addBase(doubleBase(current)), reader).run(env)
       )
     })
   })

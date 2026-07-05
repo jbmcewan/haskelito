@@ -84,6 +84,88 @@ describe('Maybe', () => {
     })
   })
 
+  describe('toEither', () => {
+    test('converts Just into Right', () => {
+      const result = Maybe.toEither(() => 'missing', Maybe.Just(42))
+
+      expect(
+        result.fold(
+          () => 0,
+          (value) => value
+        )
+      ).toBe(42)
+    })
+
+    test('converts Nothing into Left', () => {
+      const result = Maybe.toEither(() => 'missing', Maybe.Nothing())
+
+      expect(
+        result.fold(
+          (error) => error,
+          () => 'ok'
+        )
+      ).toBe('missing')
+    })
+  })
+
+  describe('filter', () => {
+    test('keeps Just when the predicate passes', () => {
+      const result = Maybe.filter((value: number) => value > 1, Maybe.Just(2))
+
+      expect(result.tag).toBe('Just')
+      expect(
+        result.fold(
+          () => 0,
+          (value) => value
+        )
+      ).toBe(2)
+    })
+
+    test('returns Nothing when the predicate fails', () => {
+      const result = Maybe.filter((value: number) => value > 2, Maybe.Just(2))
+
+      expect(result.tag).toBe('Nothing')
+    })
+
+    test('preserves Nothing', () => {
+      const result = Maybe.filter((value: number) => value > 2, Maybe.Nothing())
+
+      expect(result.tag).toBe('Nothing')
+    })
+  })
+
+  describe('orElse', () => {
+    test('preserves Just values', () => {
+      const result = Maybe.orElse(() => Maybe.Just(99), Maybe.Just(2))
+
+      expect(
+        result.fold(
+          () => 0,
+          (value) => value
+        )
+      ).toBe(2)
+    })
+
+    test('uses the fallback for Nothing', () => {
+      const result = Maybe.orElse(() => Maybe.Just(99), Maybe.Nothing())
+
+      expect(
+        result.fold(
+          () => 0,
+          (value) => value
+        )
+      ).toBe(99)
+    })
+
+    test('does not evaluate fallback for Just values', () => {
+      expect(() =>
+        Maybe.orElse(() => {
+          throw new Error('fallback should not be evaluated for Just')
+        }, Maybe.Just(2))
+      ).not.toThrow()
+    })
+  })
+
   describe('of', () => {
     test('is an alias for Just', () => {
       const maybe = Maybe.of(42)

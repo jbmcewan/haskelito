@@ -7,8 +7,9 @@
   "excludeProtected": true,
   "excludeInternal": true,
   "intentionallyNotExported": [
-    "EitherModule",
+    "EitherValue",
     "MaybeModule",
+    "MaybeValue",
     "ReaderModule",
     "ValidationModule",
     "EffectValue"

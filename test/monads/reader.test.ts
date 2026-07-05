@@ -49,4 +49,23 @@ describe('Reader', () => {
       expect(Reader.ask().run(env)).toBe(env)
     })
   })
+
+  describe('asks', () => {
+    test('projects a value from the environment', () => {
+      const reader = Reader.asks((env: { greeting: string }) => env.greeting.toUpperCase())
+
+      expect(reader.run({ greeting: 'hello' })).toBe('HELLO')
+    })
+  })
+
+  describe('local', () => {
+    test('transforms the environment before running the reader', () => {
+      const reader = Reader.local(
+        (env: { greeting: string }) => ({ message: env.greeting }),
+        Reader((env: unknown) => (env as { message: string }).message.toUpperCase())
+      )
+
+      expect(reader.run({ greeting: 'hello' })).toBe('HELLO')
+    })
+  })
 })

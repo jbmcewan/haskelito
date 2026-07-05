@@ -9,7 +9,7 @@ import {
   foldMap,
   match,
   take
-} from '../src/index.js'
+} from '../dist/index.js'
 
 const mockDatabase = {
   users: {

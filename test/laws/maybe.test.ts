@@ -24,6 +24,15 @@ describe('Maybe laws', () => {
         toMaybeView(maybe.map(add1).map(times2))
       )
     })
+
+    test('filter acts as identity when the predicate always passes', () => {
+      const maybe = Maybe.Just(2)
+
+      expect(toMaybeView(Maybe.filter(() => true, maybe))).toEqual(toMaybeView(maybe))
+      expect(toMaybeView(Maybe.filter(() => true, Maybe.Nothing()))).toEqual(
+        toMaybeView(Maybe.Nothing())
+      )
+    })
   })
 
   describe('Monad', () => {
@@ -39,6 +48,25 @@ describe('Maybe laws', () => {
       expect(toMaybeView(m.flatMap(maybeF).flatMap(maybeG))).toEqual(
         toMaybeView(m.flatMap((x) => maybeF(x).flatMap(maybeG)))
       )
+    })
+  })
+
+  describe('Fallback helpers', () => {
+    test('orElse is associative and uses Nothing as identity', () => {
+      const first = Maybe.Nothing()
+      const second = Maybe.Just(2)
+      const third = Maybe.Just(3)
+
+      expect(toMaybeView(Maybe.orElse(() => first, Maybe.Nothing()))).toEqual(toMaybeView(first))
+      expect(toMaybeView(Maybe.orElse(() => Maybe.Nothing(), second))).toEqual(toMaybeView(second))
+      expect(
+        toMaybeView(
+          Maybe.orElse(
+            () => third,
+            Maybe.orElse(() => second, first)
+          )
+        )
+      ).toEqual(toMaybeView(Maybe.orElse(() => Maybe.orElse(() => third, second), first)))
     })
   })
 })

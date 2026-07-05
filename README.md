@@ -101,7 +101,7 @@ src/
 - `combinators`: `curry`, `pipe`, `compose`, `map`, `chain`, `flatMap`
 - `adt`: `Maybe`, `Either`, `Validation`, `match`, `matchOrElse`, `matchExhaustive`
 - `monads`: `Reader`, `Effect`
-- `monoids`: `Sum`, `Product`, `All`, `ListMonoid`, `foldMap`
+- `monoids`: `Sum`, `Product`, `All`, `Any`, `First`, `Last`, `ListMonoid`, `foldMap`
 - `collections`: `Stream`, `take`
 
 ## Common Helpers
@@ -109,14 +109,25 @@ src/
 The container-style modules expose a more consistent API:
 
 - `Maybe.of(value)` is an alias for `Maybe.Just(value)`
+- `Maybe.toEither(onNothing, value)` converts `Just` to `Right` and `Nothing` to `Left`
+- `Maybe.filter(predicate, value)` keeps a `Just` only when the predicate passes
+- `Maybe.orElse(fallback, value)` provides a fallback when a value is `Nothing`
 - `Either.of(value)` is an alias for `Either.Right(value)`
+- `Either.mapLeft(fn, value)` transforms `Left` values without touching `Right`
+- `Either.bimap(onLeft, onRight, value)` transforms either branch explicitly
 - `Validation.of(value)` is an alias for `Validation.Success(value)`
 - `Reader.of(value)` lifts a plain value into a `Reader`
+- `Reader.asks(select)` projects a value from the environment
+- `Reader.local(transform, reader)` runs a `Reader` against a transformed environment
+- `First.of(value)` and `Last.of(value)` create Maybe-backed values for first/last monoids
+- `First.fromNullable(value)` and `Last.fromNullable(value)` lift nullable input into those monoid contexts
 - `Maybe.fromNullable(value)` converts nullable input into `Just` or `Nothing`
 - `Either.fromNullable(value, onNullable)` converts nullable input into `Right` or `Left`
 - `fold` is available on `Maybe`, `Either`, and `Validation` instances
 
 ## Examples
+
+For a complete root-API walkthrough, see [docs/usage-examples.md](./docs/usage-examples.md) and the runnable [examples/api-overview.js](./examples/api-overview.js).
 
 ### Maybe
 

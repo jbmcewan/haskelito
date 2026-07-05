@@ -34,7 +34,18 @@ const createEffect = <T>(run: () => Promise<T>): EffectValue<T> => {
   return self
 }
 
-/** Effect monad for controlled async side effects. */
+/**
+ * Effect monad for controlled async side effects.
+ * @example
+ * const pathEffect = Effect.of('config.json').map((path) => `/static/${path}`)
+ *
+ * await pathEffect.run()
+ *
+ * await Effect.tryCatch(
+ *   () => fetch('/api/data').then((response) => response.json()),
+ *   (error) => ({ error: error.message })
+ * ).run()
+ */
 export const Effect = Object.freeze({
   /** Lifts a plain value into an effect that resolves immediately. */
   of: <T>(value: T): EffectValue<T> => createEffect(() => Promise.resolve(value)),

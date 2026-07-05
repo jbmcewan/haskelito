@@ -44,6 +44,62 @@ describe('Either', () => {
     })
   })
 
+  describe('mapLeft', () => {
+    test('maps over Left values', () => {
+      const result = Either.mapLeft((error: string) => error.toUpperCase(), Either.Left('boom'))
+
+      expect(
+        result.fold(
+          (error) => error,
+          () => 'ok'
+        )
+      ).toBe('BOOM')
+    })
+
+    test('preserves Right values', () => {
+      const result = Either.mapLeft((error: string) => error.toUpperCase(), Either.Right(3))
+
+      expect(
+        result.fold(
+          () => 0,
+          (value) => value
+        )
+      ).toBe(3)
+    })
+  })
+
+  describe('bimap', () => {
+    test('maps the left branch', () => {
+      const result = Either.bimap(
+        (error: string) => error.toUpperCase(),
+        (value: number) => value * 2,
+        Either.Left('boom')
+      )
+
+      expect(
+        result.fold(
+          (error) => error,
+          () => 'ok'
+        )
+      ).toBe('BOOM')
+    })
+
+    test('maps the right branch', () => {
+      const result = Either.bimap(
+        (error: string) => error.toUpperCase(),
+        (value: number) => value * 2,
+        Either.Right(3)
+      )
+
+      expect(
+        result.fold(
+          () => 0,
+          (value) => value
+        )
+      ).toBe(6)
+    })
+  })
+
   describe('tryCatch', () => {
     test('captures thrown errors', () => {
       const result = Either.tryCatch(

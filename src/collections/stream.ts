@@ -1,5 +1,9 @@
 /** Module for lazy stream constructors and helpers. */
-/** Lazy stream utilities. */
+/**
+ * Lazy stream utilities.
+ * @example
+ * const evens = Stream.iterate((value) => value + 2, 0)
+ */
 export const Stream = {
   /**
    * Creates an infinite generator by repeatedly applying `fn`.
