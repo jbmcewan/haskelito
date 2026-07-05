@@ -1,5 +1,5 @@
 import js from '@eslint/js'
-import fp from 'eslint-plugin-fp'
+import functional from 'eslint-plugin-functional'
 import prettier from 'eslint-config-prettier'
 
 export default [
@@ -19,25 +19,17 @@ export default [
       }
     },
     plugins: {
-      fp
+      functional
     },
     rules: {
       'no-var': 'error',
       'prefer-const': 'error',
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      'fp/no-let': 'error',
-      'fp/no-class': 'error',
-      'fp/no-this': 'error',
-      'fp/no-mutation': 'error',
-      'fp/no-mutating-assign': 'error',
-      'fp/no-mutating-methods': 'error',
-      'fp/no-loops': 'error'
-    }
-  },
-  {
-    files: ['test/**/*.js'],
-    rules: {
-      'fp/no-nil': 'off'
+      'functional/no-let': 'error',
+      'functional/no-classes': 'error',
+      'functional/no-this-expressions': 'error',
+      'functional/immutable-data': 'error',
+      'functional/no-loop-statements': 'error'
     }
   },
   prettier

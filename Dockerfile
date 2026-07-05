@@ -1,7 +1,13 @@
 # Stage 1: Build
-FROM node:20-alpine AS builder
+FROM node:lts-alpine AS builder
 
 WORKDIR /app
+
+# Install required tooling for development workflows
+RUN apk add --no-cache bash git
+
+# Pin npm version for deterministic installs in devcontainers/CI
+RUN npm install -g npm@11.18.0
 
 # Copy dependency files
 COPY package*.json ./
@@ -17,9 +23,15 @@ RUN npm run build && npm run test
 
 
 # Stage 2: Runtime (minimal, for CI/publishing artifact verification)
-FROM node:20-alpine AS runtime
+FROM node:lts-alpine AS runtime
 
 WORKDIR /app
+
+# Install required tooling for devcontainer shells
+RUN apk add --no-cache bash git
+
+# Pin npm version for interactive devcontainer usage
+RUN npm install -g npm@11.18.0
 
 # Copy only package.json and lock file for reference
 COPY package*.json ./
