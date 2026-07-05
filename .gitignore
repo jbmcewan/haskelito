@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Test and tooling artifacts
+coverage
+.nyc_output
+.eslintcache
+
+# Husky runtime internals
+.husky/_
