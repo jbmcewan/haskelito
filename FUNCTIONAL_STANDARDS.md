@@ -1,4 +1,4 @@
-# Functional Programming Standards for JavaScript
+# Functional Programming Standards for TypeScript
 
 This document defines required and recommended functional programming standards for this repository.
 
@@ -35,7 +35,7 @@ Recommended:
 
 Good:
 
-```js
+```ts
 const displayName = Maybe.fromNullable(user)
   .map((value) => value.name)
   .getOrElse('Anonymous')
@@ -43,7 +43,7 @@ const displayName = Maybe.fromNullable(user)
 
 Avoid:
 
-```js
+```ts
 const displayName = user && user.name ? user.name : 'Anonymous'
 ```
 
@@ -74,7 +74,7 @@ Recommended:
 
 Good:
 
-```js
+```ts
 const loadUser = Effect.tryCatch(() => fetch('/user').then((r) => r.json()), String)
 const userName = loadUser.map((user) => user.name)
 ```

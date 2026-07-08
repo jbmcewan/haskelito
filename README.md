@@ -1,6 +1,6 @@
 # haskelito
 
-Small functional programming utilities for JavaScript, organized around focused modules instead of a single monolithic entry file.
+Small functional programming utilities for TypeScript, organized around focused modules instead of a single monolithic entry file.
 
 ## Install
 
@@ -28,7 +28,7 @@ docker compose run --rm dev
 
 ## Root Import
 
-```js
+```ts
 import {
   Maybe,
   Either,
@@ -45,7 +45,7 @@ import {
 
 ## Subpath Imports
 
-```js
+```ts
 import { Maybe } from 'haskelito/adt/maybe'
 import { Either } from 'haskelito/adt/either'
 import { Reader } from 'haskelito/monads/reader'
@@ -72,29 +72,29 @@ const { Maybe, Either, pipe, foldMap, Sum, Stream, take } = require('haskelito')
 ```text
 src/
   adt/
-    maybe.js
-    either.js
-    validation.js
-    match.js
+    maybe.ts
+    either.ts
+    validation.ts
+    match.ts
   collections/
-    stream.js
-    take.js
+    stream.ts
+    take.ts
   combinators/
-    curry.js
-    pipe.js
-    compose.js
-    map.js
-    chain.js
+    curry.ts
+    pipe.ts
+    compose.ts
+    map.ts
+    chain.ts
   monads/
-    reader.js
-    effect.js
+    reader.ts
+    effect.ts
   monoids/
-    sum.js
-    product.js
-    all.js
-    listMonoid.js
-    foldMap.js
-  index.js
+    sum.ts
+    product.ts
+    all.ts
+    listMonoid.ts
+    foldMap.ts
+  index.ts
 ```
 
 ## Exported API
@@ -132,7 +132,7 @@ For a complete root-API walkthrough, see [docs/usage-examples.md](./docs/usage-e
 
 ### Maybe
 
-```js
+```ts
 const result = Maybe.fromNullable(user)
   .map((value) => value.name)
   .fold(
@@ -143,7 +143,7 @@ const result = Maybe.fromNullable(user)
 
 ### Either
 
-```js
+```ts
 const parsed = Either.tryCatch(
   () => JSON.parse(input),
   (error) => error.message
@@ -157,7 +157,7 @@ const message = parsed.fold(
 
 ### Reader and Effect
 
-```js
+```ts
 const readApiBase = Reader.ask().map((env) => env.apiBase)
 
 const fetchConfig = Effect.of('/config.json').map((path) => `${path}?v=1`)
@@ -165,7 +165,7 @@ const fetchConfig = Effect.of('/config.json').map((path) => `${path}?v=1`)
 
 ### Monoids and Lazy Streams
 
-```js
+```ts
 const evens = Stream.iterate((n) => n + 2, 0)
 const firstFive = take(5, evens)
 const total = foldMap(Sum, firstFive)
@@ -267,4 +267,4 @@ This keeps dependency installation isolated in the container while still using l
 
 ## Functional Standards
 
-Project standards for functional JavaScript are documented in [FUNCTIONAL_STANDARDS.md](./FUNCTIONAL_STANDARDS.md). Treat the required rules in that document as merge criteria for new code.
+Project standards for functional TypeScript are documented in [FUNCTIONAL_STANDARDS.md](./FUNCTIONAL_STANDARDS.md). Treat the required rules in that document as merge criteria for new code.
