@@ -50,7 +50,9 @@ export default [
   {
     files: ['test/**/*.{ts,mts,cts}'],
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off'
+      '@typescript-eslint/no-explicit-any': 'off',
+      'functional/no-let': 'off',
+      'functional/immutable-data': 'off'
     }
   },
   prettier
