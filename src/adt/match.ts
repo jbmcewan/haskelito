@@ -10,7 +10,11 @@ type TaggedValue =
   | null
   | undefined
 
-/** Pattern map keyed by tags, with optional wildcard `_`. */
+/**
+ * Pattern map keyed by tags, with optional wildcard `_`.
+ *
+ * @typeParam T - The result produced by each pattern branch.
+ */
 type MatchPatterns<T = unknown> = Record<string, (value: unknown) => T> & {
   _?: () => T
 }

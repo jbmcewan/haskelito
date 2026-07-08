@@ -1,5 +1,9 @@
 /** Module providing the Effect monad for deferred async side effects. */
-/** Effect instance contract. */
+/**
+ * Effect instance contract.
+ *
+ * @typeParam T - The resolved value type.
+ */
 type EffectValue<T> = Readonly<{
   tag: 'Effect'
   run: () => Promise<T>
@@ -7,7 +11,13 @@ type EffectValue<T> = Readonly<{
   flatMap: <U>(fn: (value: T) => EffectValue<U>) => EffectValue<U>
 }>
 
-/** Internal constructor for validated Effect values. */
+/**
+ * Internal constructor for validated Effect values.
+ *
+ * @typeParam T - The resolved value type.
+ * @param run - The deferred async computation.
+ * @returns A validated effect instance.
+ */
 const createEffect = <T>(run: () => Promise<T>): EffectValue<T> => {
   if (typeof run !== 'function') {
     throw new TypeError('Effect expects run to be a function')
@@ -36,6 +46,7 @@ const createEffect = <T>(run: () => Promise<T>): EffectValue<T> => {
 
 /**
  * Effect monad for controlled async side effects.
+ *
  * @example
  * const pathEffect = Effect.of('config.json').map((path) => `/static/${path}`)
  *
@@ -47,10 +58,21 @@ const createEffect = <T>(run: () => Promise<T>): EffectValue<T> => {
  * ).run()
  */
 export const Effect = Object.freeze({
-  /** Lifts a plain value into an effect that resolves immediately. */
+  /**
+   * Lifts a plain value into an effect that resolves immediately.
+   *
+   * @param value - The value to lift.
+   * @returns An effect that resolves with the provided value.
+   */
   of: <T>(value: T): EffectValue<T> => createEffect(() => Promise.resolve(value)),
 
-  /** Captures thrown/rejected failures and maps them with `onError`. */
+  /**
+   * Captures thrown or rejected failures and maps them with `onError`.
+   *
+   * @param thunk - Produces the effectful value.
+   * @param onError - Produces a recovery value when the thunk fails.
+   * @returns An effect that resolves either the success or recovery path.
+   */
   tryCatch: <T>(
     thunk: () => T | Promise<T>,
     onError: (error: unknown) => T | Promise<T>

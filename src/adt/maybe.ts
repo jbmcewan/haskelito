@@ -1,10 +1,18 @@
 /** Module providing the Maybe algebraic data type and constructors. */
 import { Either, type EitherValue } from './either.js'
 
-/** A maybe value that is either present (`Just`) or absent (`Nothing`). */
+/**
+ * A maybe value that is either present (`Just`) or absent (`Nothing`).
+ *
+ * @typeParam T - The wrapped success value.
+ */
 export type MaybeValue<T> = Just<T> | Nothing
 
-/** Represents a present value in the Maybe ADT. */
+/**
+ * Represents a present value in the Maybe ADT.
+ *
+ * @typeParam T - The wrapped value type.
+ */
 export type Just<T> = Readonly<{
   tag: 'Just'
   value: T
@@ -25,24 +33,62 @@ export type Nothing = Readonly<{
 
 /** Constructors and helpers for creating Maybe values. */
 export type MaybeModule = Readonly<{
-  /** Creates a `Just` value. */
+  /**
+   * Creates a `Just` value.
+   *
+   * @param value - The value to wrap.
+   * @returns A present maybe value.
+   */
   Just: <T>(value: T) => MaybeValue<T>
-  /** Creates a `Nothing` value. */
+  /**
+   * Creates a `Nothing` value.
+   *
+   * @returns An absent maybe value.
+   */
   Nothing: () => Nothing
-  /** Converts a Maybe value into an Either value. */
+  /**
+   * Converts a Maybe value into an Either value.
+   *
+   * @param onNothing - Produces the left value when the maybe is absent.
+   * @param value - The maybe value to convert.
+   * @returns A right value for `Just`, or a left value for `Nothing`.
+   */
   toEither: <L, T>(onNothing: () => L, value: MaybeValue<T>) => EitherValue<L, T>
-  /** Keeps a `Just` only when the predicate returns true. */
+  /**
+   * Keeps a `Just` only when the predicate returns true.
+   *
+   * @param predicate - Checks whether the wrapped value should be kept.
+   * @param value - The maybe value to test.
+   * @returns The original `Just` when the predicate passes, otherwise `Nothing`.
+   */
   filter: <T>(predicate: (value: T) => boolean, value: MaybeValue<T>) => MaybeValue<T>
-  /** Returns the original Maybe when present, otherwise uses a fallback. */
+  /**
+   * Returns the original Maybe when present, otherwise uses a fallback.
+   *
+   * @param fallback - Produces the replacement maybe value when absent.
+   * @param value - The maybe value to inspect.
+   * @returns The original value when present, otherwise the fallback result.
+   */
   orElse: <T>(fallback: () => MaybeValue<T>, value: MaybeValue<T>) => MaybeValue<T>
-  /** Converts nullable input to `Just` or `Nothing`. */
+  /**
+   * Converts nullable input to `Just` or `Nothing`.
+   *
+   * @param value - The nullable input value.
+   * @returns `Just` when the value is non-nullish, otherwise `Nothing`.
+   */
   fromNullable: <T>(value: T | null | undefined) => MaybeValue<NonNullable<T>>
-  /** Alias for `Just`. */
+  /**
+   * Alias for `Just`.
+   *
+   * @param value - The value to wrap.
+   * @returns A present maybe value.
+   */
   of: <T>(value: T) => MaybeValue<T>
 }>
 
 /**
  * Maybe constructors and helpers.
+ *
  * @example
  * const result = Maybe.fromNullable(user)
  *   .map((value) => value.name)

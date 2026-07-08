@@ -1,6 +1,7 @@
 /** Module exporting the multiplicative numeric monoid. */
 /**
  * Numeric multiplication monoid.
+ *
  * @example
  * Product.concat(4, 5)
  * Product.empty()

@@ -1,6 +1,7 @@
 /** Module exporting the boolean conjunction monoid. */
 /**
  * Boolean conjunction monoid.
+ *
  * @example
  * All.concat(true, false)
  * All.empty()

@@ -1,8 +1,18 @@
 /** Module providing the Either algebraic data type and constructors. */
-/** An either value that is `Left` (error) or `Right` (success). */
+/**
+ * An either value that is `Left` (error) or `Right` (success).
+ *
+ * @typeParam L - The error value type.
+ * @typeParam R - The success value type.
+ */
 export type EitherValue<L, R> = Left<L, R> | Right<L, R>
 
-/** Represents a successful branch in the Either ADT. */
+/**
+ * Represents a successful branch in the Either ADT.
+ *
+ * @typeParam L - The error value type.
+ * @typeParam R - The success value type.
+ */
 export type Right<L, R> = Readonly<{
   tag: 'Right'
   value: R
@@ -11,7 +21,12 @@ export type Right<L, R> = Readonly<{
   fold: <U>(onLeft: (error: L) => U, onRight: (value: R) => U) => U
 }>
 
-/** Represents an error branch in the Either ADT. */
+/**
+ * Represents an error branch in the Either ADT.
+ *
+ * @typeParam L - The error value type.
+ * @typeParam R - The success value type.
+ */
 export type Left<L, R> = Readonly<{
   tag: 'Left'
   value: L
@@ -22,34 +37,75 @@ export type Left<L, R> = Readonly<{
 
 /** Constructors and helpers for creating Either values. */
 export type EitherModule = Readonly<{
-  /** Creates a successful `Right` value. */
+  /**
+   * Creates a successful `Right` value.
+   *
+   * @param value - The value to wrap.
+   * @returns A successful either value.
+   */
   Right: <R>(value: R) => EitherValue<never, R>
-  /** Creates an error `Left` value. */
+  /**
+   * Creates an error `Left` value.
+   *
+   * @param error - The error to wrap.
+   * @returns A failed either value.
+   */
   Left: <L>(error: L) => EitherValue<L, never>
-  /** Maps over an error `Left` value while preserving `Right`. */
+  /**
+   * Maps over an error `Left` value while preserving `Right`.
+   *
+   * @param fn - Transforms the left value.
+   * @param value - The either value to map.
+   * @returns A new either value with the transformed left branch.
+   */
   mapLeft: <L, R, U>(
     fn: (error: L) => U,
     value: EitherValue<L, R> | EitherValue<never, R>
   ) => EitherValue<U, R>
-  /** Maps both branches of an Either value. */
+  /**
+   * Maps both branches of an Either value.
+   *
+   * @param onLeft - Transforms the left branch.
+   * @param onRight - Transforms the right branch.
+   * @param value - The either value to map.
+   * @returns A new either value with the mapped branch.
+   */
   bimap: <L, R, L2, R2>(
     onLeft: (error: L) => L2,
     onRight: (value: R) => R2,
     value: EitherValue<L, R> | EitherValue<never, R>
   ) => EitherValue<L2, R2>
-  /** Wraps a throwing function and maps thrown errors into `Left`. */
+  /**
+   * Wraps a throwing function and maps thrown errors into `Left`.
+   *
+   * @param fn - The function to execute.
+   * @param onError - Maps a thrown error into a left value.
+   * @returns A `Right` for success, or a `Left` when the function throws.
+   */
   tryCatch: <R>(fn: () => R, onError: (error: unknown) => unknown) => EitherValue<unknown, R>
-  /** Converts nullable input to `Right` or `Left`. */
+  /**
+   * Converts nullable input to `Right` or `Left`.
+   *
+   * @param value - The nullable input value.
+   * @param onNullable - Produces the left value when the input is nullish.
+   * @returns `Right` when the input is non-nullish, otherwise `Left`.
+   */
   fromNullable: <R>(
     value: R | null | undefined,
     onNullable?: (value: R | null | undefined) => unknown
   ) => EitherValue<unknown, NonNullable<R>>
-  /** Alias for `Right`. */
+  /**
+   * Alias for `Right`.
+   *
+   * @param value - The value to wrap.
+   * @returns A successful either value.
+   */
   of: <R>(value: R) => EitherValue<never, R>
 }>
 
 /**
  * Either constructors and helper functions.
+ *
  * @example
  * const parsed = Either.tryCatch(
  *   () => JSON.parse(input),

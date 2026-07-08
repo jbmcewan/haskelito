@@ -1,6 +1,9 @@
 /** Module containing right-to-left composition helpers. */
 /**
  * Composes functions from right to left.
+ *
+ * @param fns - The functions to compose.
+ * @returns A unary function that applies the composition.
  * @example
  * const format = compose(
  *   (value) => value.toUpperCase(),

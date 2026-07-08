@@ -1,6 +1,7 @@
 /** Module exporting the additive numeric monoid. */
 /**
  * Numeric addition monoid.
+ *
  * @example
  * Sum.concat(10, 20)
  * Sum.empty()

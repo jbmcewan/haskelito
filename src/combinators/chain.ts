@@ -16,6 +16,8 @@ export const chain = curry((fn: (value: unknown) => unknown, monad: Chainable): 
 )
 /**
  * Alias for `chain`.
+ *
+ * @see chain
  * @example
  * flatMap((value) => Maybe.Just(value * 3), Maybe.Just(2))
  */

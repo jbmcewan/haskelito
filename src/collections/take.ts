@@ -1,7 +1,11 @@
 /** Module containing utilities for bounded collection from iterators. */
 import { curry } from '../combinators/curry.js'
 
-/** Minimal iterator contract used by `take`. */
+/**
+ * Minimal iterator contract used by `take`.
+ *
+ * @typeParam T - The yielded value type.
+ */
 type IteratorLike<T> = {
   next: () => IteratorResult<T>
 }

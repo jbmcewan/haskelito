@@ -1,19 +1,15 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["src/index.ts"],
+  "entryPoints": ["src/adt", "src/collections", "src/combinators", "src/monads", "src/monoids"],
+  "entryPointStrategy": "expand",
   "tsconfig": "tsconfig.build.json",
   "out": "docs/api",
   "excludePrivate": true,
   "excludeProtected": true,
   "excludeInternal": true,
-  "intentionallyNotExported": [
-    "EitherValue",
-    "MaybeModule",
-    "MaybeValue",
-    "ReaderModule",
-    "ValidationModule",
-    "EffectValue"
-  ],
+  "excludeReferences": true,
+  "intentionallyNotExported": ["ReaderModule", "EffectValue"],
+  "sort": ["source-order"],
   "readme": "none",
   "name": "haskelito API"
 }

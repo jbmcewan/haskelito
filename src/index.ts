@@ -1,6 +1,8 @@
 /**
  * Barrel module for public haskelito FP primitives and utilities.
  * Re-exports stable APIs from all domain modules.
+ *
+ * @packageDocumentation
  */
 export { curry } from './combinators/curry.js'
 export { pipe } from './combinators/pipe.js'

@@ -1,10 +1,20 @@
 /** Module providing the Validation ADT with error accumulation semantics. */
 import { ListMonoid } from '../monoids/listMonoid.js'
 
-/** A validation value that accumulates failures or carries success. */
+/**
+ * A validation value that accumulates failures or carries success.
+ *
+ * @typeParam E - The error collection type.
+ * @typeParam T - The success value type.
+ */
 export type ValidationValue<E, T> = Success<E, T> | Failure<E, T>
 
-/** Represents a successful validation result. */
+/**
+ * Represents a successful validation result.
+ *
+ * @typeParam E - The error collection type.
+ * @typeParam T - The success value type.
+ */
 export type Success<E, T> = Readonly<{
   tag: 'Success'
   value: T
@@ -13,7 +23,12 @@ export type Success<E, T> = Readonly<{
   fold: <U>(onFailure: (errors: E) => U, onSuccess: (value: T) => U) => U
 }>
 
-/** Represents a failed validation result with accumulated errors. */
+/**
+ * Represents a failed validation result with accumulated errors.
+ *
+ * @typeParam E - The error collection type.
+ * @typeParam T - The success value type.
+ */
 export type Failure<E, T> = Readonly<{
   tag: 'Failure'
   value: E
@@ -24,16 +39,32 @@ export type Failure<E, T> = Readonly<{
 
 /** Constructors for creating Validation values. */
 export type ValidationModule = Readonly<{
-  /** Creates a successful validation result. */
+  /**
+   * Creates a successful validation result.
+   *
+   * @param value - The successful value.
+   * @returns A successful validation.
+   */
   Success: <E, T>(value: T) => ValidationValue<E, T>
-  /** Creates a failed validation result. */
+  /**
+   * Creates a failed validation result.
+   *
+   * @param errors - The accumulated errors.
+   * @returns A failed validation.
+   */
   Failure: <E, T = never>(errors: E) => ValidationValue<E, T>
-  /** Alias for `Success`. */
+  /**
+   * Alias for `Success`.
+   *
+   * @param value - The successful value.
+   * @returns A successful validation.
+   */
   of: <E, T>(value: T) => ValidationValue<E, T>
 }>
 
 /**
  * Validation constructors and applicative helpers.
+ *
  * @example
  * Validation.Success((value) => value * 2).ap(Validation.Success(4))
  * Validation.Failure(['email is required'])

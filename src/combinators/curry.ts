@@ -1,6 +1,11 @@
 /** Module containing function currying helpers. */
 /**
  * Curries a function by collecting arguments until arity is satisfied.
+ *
+ * @typeParam TArgs - The input argument tuple.
+ * @typeParam TResult - The function result type.
+ * @param fn - The function to curry.
+ * @returns A variadic curried wrapper.
  * @example
  * const add3 = curry((a, b, c) => a + b + c)
  *

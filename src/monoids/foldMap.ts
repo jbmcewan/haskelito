@@ -1,13 +1,21 @@
 /** Module containing monoid-based folding helpers. */
 import { curry } from '../combinators/curry.js'
 
-/** Monoid contract used by fold helpers. */
+/**
+ * Monoid contract used by fold helpers.
+ *
+ * @typeParam T - The value combined by the monoid.
+ */
 type Monoid<T> = {
   empty: () => T
   concat: (left: T, right: T) => T
 }
 
-/** Minimal reducible contract used by `foldMap`. */
+/**
+ * Minimal reducible contract used by `foldMap`.
+ *
+ * @typeParam T - The value produced during reduction.
+ */
 type Reducible<T> = {
   reduce: (fn: (acc: T, value: T) => T, initialValue: T) => T
 }

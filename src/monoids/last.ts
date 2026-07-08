@@ -3,6 +3,7 @@ import { Maybe, type MaybeValue } from '../adt/maybe.js'
 
 /**
  * Monoid that keeps the last `Just` value.
+ *
  * @example
  * Last.of('secondary')
  * Last.fromNullable(user)
