@@ -12,6 +12,7 @@ npm install haskelito
 
 ```bash
 npm install
+npm run setup:git-hooks
 npm test
 npm run build
 node examples/demo.js
@@ -175,6 +176,7 @@ const total = foldMap(Sum, firstFive)
 ```bash
 npm test
 npm run build
+npm run setup:git-hooks
 ```
 
 ## Release

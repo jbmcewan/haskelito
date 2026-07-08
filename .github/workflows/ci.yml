@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.1
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Pack package
+        run: npm pack >/dev/null
+
+      - name: Smoke test packed install
+        run: |
+          set -euo pipefail
+
+          tarball="$(find . -maxdepth 1 -name '*.tgz' -print -quit)"
+          temp_dir="$(mktemp -d)"
+
+          pushd "$temp_dir" >/dev/null
+          npm init -y >/dev/null
+          npm install "$GITHUB_WORKSPACE/$tarball" >/dev/null
+
+          node --input-type=module <<'NODE'
+          import { Maybe } from '@jbmcewan/haskelito'
+
+          if (!Maybe) {
+            throw new Error('Packed install did not expose Maybe')
+          }
+          NODE
+
+          popd >/dev/null
