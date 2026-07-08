@@ -71,6 +71,7 @@
   ],
   "scripts": {
     "build": "vite build && npm run build:types && npm run build:docs",
+    "build:package": "vite build && npm run build:types",
     "build:docs": "typedoc --options typedoc.json",
     "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -79,7 +80,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "prepare": "husky"
+    "prepare": "npm run build:package",
+    "postinstall": "node ./scripts/install-husky.js"
   },
   "lint-staged": {
     "**/*.{js,mjs,cjs,ts,mts,cts}": [
