@@ -82,6 +82,14 @@ export type EitherModule = Readonly<{
    * @param onError - Maps a thrown error into a left value.
    * @returns A `Right` for success, or a `Left` when the function throws.
    */
+  fromThrowable: <R>(fn: () => R, onError: (error: unknown) => unknown) => EitherValue<unknown, R>
+  /**
+   * Backward-compatible alias for `fromThrowable`.
+   *
+   * @param fn - The function to execute.
+   * @param onError - Maps a thrown error into a left value.
+   * @returns A `Right` for success, or a `Left` when the function throws.
+   */
   tryCatch: <R>(fn: () => R, onError: (error: unknown) => unknown) => EitherValue<unknown, R>
   /**
    * Converts nullable input to `Right` or `Left`.
@@ -107,7 +115,7 @@ export type EitherModule = Readonly<{
  * Either constructors and helper functions.
  *
  * @example
- * const parsed = Either.tryCatch(
+ * const parsed = Either.fromThrowable(
  *   () => JSON.parse(input),
  *   (error) => error.message
  * )
@@ -115,6 +123,14 @@ export type EitherModule = Readonly<{
  * Either.mapLeft((error) => `ERR:${error}`, Either.Left('boom'))
  * Either.bimap((error) => `ERR:${error}`, (value) => value * 2, Either.Right(4))
  */
+const fromThrowable = <R>(fn: () => R, onError: (error: unknown) => unknown) => {
+  try {
+    return Either.Right(fn()) as unknown as EitherValue<unknown, R>
+  } catch (err) {
+    return Either.Left(onError(err)) as unknown as EitherValue<unknown, R>
+  }
+}
+
 export const Either = Object.freeze({
   Right: <R>(value: R) =>
     Object.freeze({
@@ -151,13 +167,8 @@ export const Either = Object.freeze({
       (right) => Either.Right(onRight(right)) as unknown as EitherValue<L2, R2>
     ),
 
-  tryCatch: <R>(fn: () => R, onError: (error: unknown) => unknown) => {
-    try {
-      return Either.Right(fn()) as unknown as EitherValue<unknown, R>
-    } catch (err) {
-      return Either.Left(onError(err)) as unknown as EitherValue<unknown, R>
-    }
-  },
+  fromThrowable,
+  tryCatch: fromThrowable,
 
   fromNullable: <R>(
     value: R | null | undefined,

@@ -31,6 +31,39 @@ describe('Effect', () => {
     })
   })
 
+  describe('ensuring', () => {
+    test('runs finalizer after successful effect', async () => {
+      let finalized = false
+
+      const effect = Effect.ensuring(Effect.of('done'), () => {
+        finalized = true
+      })
+
+      await expect(effect.run()).resolves.toBe('done')
+      expect(finalized).toBe(true)
+    })
+
+    test('runs finalizer after failed effect', async () => {
+      let finalized = false
+
+      const failed = Effect.tryCatch(
+        () => {
+          throw new Error('boom')
+        },
+        (error) => {
+          throw error
+        }
+      )
+
+      const effect = Effect.ensuring(failed, () => {
+        finalized = true
+      })
+
+      await expect(effect.run()).rejects.toThrow('boom')
+      expect(finalized).toBe(true)
+    })
+  })
+
   describe('map', () => {
     test('transforms the resolved value', async () => {
       await expect(
@@ -48,6 +81,57 @@ describe('Effect', () => {
         .flatMap((value) => Effect.of(value * 3))
 
       await expect(effect.run()).resolves.toBe(9)
+    })
+  })
+
+  describe('bracket', () => {
+    test('returns use result and always releases resource on success', async () => {
+      let released: number | null = null
+
+      const effect = Effect.bracket(
+        () => 21,
+        (resource) => resource * 2,
+        (resource) => {
+          released = resource
+        }
+      )
+
+      await expect(effect.run()).resolves.toBe(42)
+      expect(released).toBe(21)
+    })
+
+    test('releases resource when use fails', async () => {
+      let released: number | null = null
+
+      const effect = Effect.bracket(
+        () => 7,
+        () => {
+          throw new Error('use failed')
+        },
+        (resource) => {
+          released = resource
+        }
+      )
+
+      await expect(effect.run()).rejects.toThrow('use failed')
+      expect(released).toBe(7)
+    })
+
+    test('does not release when acquire fails', async () => {
+      let released = false
+
+      const effect = Effect.bracket(
+        () => {
+          throw new Error('acquire failed')
+        },
+        () => 'unused',
+        () => {
+          released = true
+        }
+      )
+
+      await expect(effect.run()).rejects.toThrow('acquire failed')
+      expect(released).toBe(false)
     })
   })
 })

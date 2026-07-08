@@ -100,9 +100,9 @@ describe('Either', () => {
     })
   })
 
-  describe('tryCatch', () => {
+  describe('fromThrowable', () => {
     test('captures thrown errors', () => {
-      const result = Either.tryCatch(
+      const result = Either.fromThrowable(
         () => {
           throw new Error('bad input')
         },
@@ -118,7 +118,7 @@ describe('Either', () => {
     })
 
     test('returns Right for successful execution', () => {
-      const result = Either.tryCatch(
+      const result = Either.fromThrowable(
         () => 'loaded',
         () => 'ignored'
       )
@@ -129,6 +129,28 @@ describe('Either', () => {
           (value) => value
         )
       ).toBe('loaded')
+    })
+  })
+
+  describe('tryCatch alias', () => {
+    test('is an alias of fromThrowable for backward compatibility', () => {
+      expect(Either.tryCatch).toBe(Either.fromThrowable)
+    })
+
+    test('preserves previous behavior through alias', () => {
+      const result = Either.tryCatch(
+        () => {
+          throw new Error('legacy path')
+        },
+        (error) => (error instanceof Error ? error.message : String(error))
+      )
+
+      expect(
+        result.fold(
+          (error) => error,
+          () => 'ok'
+        )
+      ).toBe('legacy path')
     })
   })
 

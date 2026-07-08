@@ -144,7 +144,7 @@ const result = Maybe.fromNullable(user)
 ### Either
 
 ```ts
-const parsed = Either.tryCatch(
+const parsed = Either.fromThrowable(
   () => JSON.parse(input),
   (error) => error.message
 )
@@ -153,6 +153,8 @@ const message = parsed.fold(
   (error) => `Invalid input: ${error}`,
   (value) => `Loaded ${value.id}`
 )
+
+// Backward compatibility: Either.tryCatch remains as an alias.
 ```
 
 ### Reader and Effect
@@ -198,6 +200,18 @@ This repository includes three Docker Compose services in [docker-compose.yml](.
 
 - Docker and Docker Compose installed
 - Run commands from the repository root
+
+### Host UID/GID Mapping (Non-root Writes)
+
+Compose services run as your host user by default pattern: `${LOCAL_UID:-1000}:${LOCAL_GID:-1000}`.
+If your local user is not `1000:1000`, export these before running compose:
+
+```bash
+export LOCAL_UID=$(id -u)
+export LOCAL_GID=$(id -g)
+```
+
+The devcontainer is also configured to use a non-root remote user (`node`) with UID/GID sync enabled.
 
 ### Services
 

@@ -9,6 +9,7 @@ services:
       - .:/app
       - /app/node_modules
     working_dir: /app
+    user: '${LOCAL_UID:-1000}:${LOCAL_GID:-1000}'
     environment:
       - NODE_ENV=development
     command: sh -c "npm ci && npm run build && npm run test"
@@ -23,6 +24,7 @@ services:
       - .:/app
       - /app/node_modules
     working_dir: /app
+    user: '${LOCAL_UID:-1000}:${LOCAL_GID:-1000}'
     environment:
       - NODE_ENV=test
     command: npm run test -- --watch
@@ -39,6 +41,7 @@ services:
       - .:/app
       - /app/node_modules
     working_dir: /app
+    user: '${LOCAL_UID:-1000}:${LOCAL_GID:-1000}'
     environment:
       - NODE_ENV=development
     command: sh -c "npm ci && sh"

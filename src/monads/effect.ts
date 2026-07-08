@@ -86,5 +86,69 @@ export const Effect = Object.freeze({
     }
 
     return createEffect(() => Promise.resolve().then(thunk).catch(onError))
+  },
+
+  /**
+   * Runs a finalizer after an effect settles, regardless of success or failure.
+   *
+   * @param effect - The effect to execute.
+   * @param finalizer - Cleanup logic guaranteed to run after `effect` settles.
+   * @returns An effect that preserves the original success/failure semantics.
+   */
+  ensuring: <T>(
+    effect: EffectValue<T>,
+    finalizer: () => unknown | Promise<unknown>
+  ): EffectValue<T> => {
+    if (!effect || typeof effect.run !== 'function') {
+      throw new TypeError('Effect.ensuring expects effect to be an Effect-like value')
+    }
+
+    if (typeof finalizer !== 'function') {
+      throw new TypeError('Effect.ensuring expects finalizer to be a function')
+    }
+
+    return createEffect(async () => {
+      try {
+        return await effect.run()
+      } finally {
+        await finalizer()
+      }
+    })
+  },
+
+  /**
+   * Safely acquires, uses, and releases a resource.
+   *
+   * @param acquire - Creates the resource.
+   * @param use - Uses the resource and produces a result.
+   * @param release - Cleans up the resource.
+   * @returns An effect that guarantees release after use settles.
+   */
+  bracket: <A, B>(
+    acquire: () => A | Promise<A>,
+    use: (resource: A) => B | Promise<B>,
+    release: (resource: A) => unknown | Promise<unknown>
+  ): EffectValue<B> => {
+    if (typeof acquire !== 'function') {
+      throw new TypeError('Effect.bracket expects acquire to be a function')
+    }
+
+    if (typeof use !== 'function') {
+      throw new TypeError('Effect.bracket expects use to be a function')
+    }
+
+    if (typeof release !== 'function') {
+      throw new TypeError('Effect.bracket expects release to be a function')
+    }
+
+    return createEffect(async () => {
+      const resource = await acquire()
+
+      try {
+        return await use(resource)
+      } finally {
+        await release(resource)
+      }
+    })
   }
 })

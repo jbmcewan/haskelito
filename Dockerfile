@@ -12,8 +12,9 @@ RUN npm install -g npm@11.18.0
 # Copy dependency files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies without running lifecycle scripts yet.
+# `prepare` runs a Vite library build that needs source files, which are copied later.
+RUN npm ci --ignore-scripts
 
 # Copy source code
 COPY . .

@@ -8,6 +8,8 @@
     // Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
     "dockerfile": "../Dockerfile"
   },
+  "remoteUser": "node",
+  "updateRemoteUserUID": true,
   "postCreateCommand": "HUSKY=0 npm ci",
   "customizations": {
     "vscode": {

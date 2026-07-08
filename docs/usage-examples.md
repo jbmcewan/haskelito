@@ -21,7 +21,7 @@ const displayName = (user) =>
     .getOrElse('Anonymous')
 
 const parseJson = (input) =>
-  Either.tryCatch(
+  Either.fromThrowable(
     () => JSON.parse(input),
     (error) => (error instanceof Error ? error.message : String(error))
   )
@@ -54,6 +54,8 @@ import { foldMap } from 'haskelito/monoids/foldMap'
 ```
 
 Use the published package exports, and avoid local repository paths like `../dist/index.js`, which are internal build outputs used only by this repository.
+
+`Either.tryCatch` is kept as a backward-compatible alias of `Either.fromThrowable`.
 
 ## Combinators
 
@@ -128,7 +130,7 @@ Maybe.orElse(() => Maybe.Just(fallbackUser), Maybe.Nothing())
 ### `Either`
 
 ```ts
-const parsed = Either.tryCatch(
+const parsed = Either.fromThrowable(
   () => JSON.parse(input),
   (error) => error.message
 )
