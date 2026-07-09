@@ -66,7 +66,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "docs/api",
+    "docs/usage-examples.md"
   ],
   "scripts": {
     "build": "vite build && npm run build:types && npm run build:docs",

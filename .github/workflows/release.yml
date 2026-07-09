@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.1
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package and docs
+        run: npm run build
+
+      - name: Archive docs
+        run: tar -czf haskelito-docs-${GITHUB_REF_NAME}.tar.gz docs/api
+
+      - name: Create GitHub release and upload docs artifact
+        uses: softprops/action-gh-release@v2
+        with:
+          files: haskelito-docs-${{ github.ref_name }}.tar.gz
+          generate_release_notes: true

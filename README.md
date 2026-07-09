@@ -190,7 +190,9 @@ npm run build
 npm publish
 ```
 
-This package publishes the built `dist` output only, so make sure the build succeeds first.
+This package publishes built `dist` output plus generated docs (`docs/api` and `docs/usage-examples.md`), so make sure the build succeeds first.
+
+Tagged releases (`v*`) also publish API docs to GitHub Pages and attach a docs archive to the GitHub Release.
 
 ## Containers (Docker Compose)
 
