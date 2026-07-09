@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>haskelito usage examples</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin: 2rem;
+        line-height: 1.6;
+        max-width: 900px;
+      }
+      h1, h2, h3 { line-height: 1.25; }
+      pre {
+        background: #f6f8fa;
+        padding: 1rem;
+        overflow-x: auto;
+        border-radius: 6px;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      }
+      :not(pre) > code {
+        background: #f6f8fa;
+        padding: 0.15rem 0.35rem;
+        border-radius: 4px;
+      }
+      a { text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      ul { padding-left: 1.25rem; }
+      .back-link { margin-bottom: 1.5rem; display: inline-block; }
+    </style>
+  </head>
+  <body>
+    <a class="back-link" href="./index.html">← Back to docs home</a>
+    <h1>Usage Examples</h1>
+
+    <p>This page shows one minimal example for every export in the root API.</p>
+
+    <h2>Using In Another Project</h2>
+
+    <p>Install the package in your own app:</p>
+
+    <pre><code>npm install haskelito</code></pre>
+
+    <p>Then import from the published package name, not from this repository's local <code>dist</code> or <code>src</code> files:</p>
+
+    <pre><code>import { Maybe, Either, pipe, foldMap, Sum } from 'haskelito'
+
+const displayName = (user) =&gt;
+  Maybe.fromNullable(user)
+    .map((value) =&gt; value.name)
+    .getOrElse('Anonymous')
+
+const parseJson = (input) =&gt;
+  Either.fromThrowable(
+    () =&gt; JSON.parse(input),
+    (error) =&gt; (error instanceof Error ? error.message : String(error))
+  )
+
+const total = foldMap(Sum, [1, 2, 3, 4])
+
+console.log(displayName({ name: 'Ada' }))
+console.log(
+  parseJson('{&quot;ok&quot;:true}').fold(
+    (err) =&gt; `error:${err}`,
+    (value) =&gt; value
+  )
+)
+console.log(
+  pipe(
+    2,
+    (x) =&gt; x + 1,
+    (x) =&gt; x * 3
+  )
+)
+console.log(total)</code></pre>
+
+    <p>For smaller imports, you can also use supported subpaths:</p>
+
+    <pre><code>import { Maybe } from 'haskelito/adt/maybe'
+import { Reader } from 'haskelito/monads/reader'
+import { foldMap } from 'haskelito/monoids/foldMap'</code></pre>
+
+    <p>Use the published package exports, and avoid local repository paths like <code>../dist/index.js</code>, which are internal build outputs used only by this repository.</p>
+
+    <p><code>Either.tryCatch</code> is kept as a backward-compatible alias of <code>Either.fromThrowable</code>.</p>
+
+    <h2>Combinators</h2>
+
+    <h3><code>curry</code></h3>
+    <pre><code>const add3 = curry((a, b, c) =&gt; a + b + c)
+
+add3(1)(2)(3)</code></pre>
+
+    <h3><code>pipe</code></h3>
+    <pre><code>pipe(
+  2,
+  (value) =&gt; value + 1,
+  (value) =&gt; value * 3
+)</code></pre>
+
+    <h3><code>compose</code></h3>
+    <pre><code>const format = compose(
+  (value) =&gt; value.toUpperCase(),
+  (value) =&gt; `${value}!`
+)
+
+format('hi')</code></pre>
+
+    <h3><code>map</code></h3>
+    <pre><code>map((value) =&gt; value * 2, Maybe.Just(4))</code></pre>
+
+    <h3><code>chain</code></h3>
+    <pre><code>chain((value) =&gt; Maybe.Just(value + 5), Maybe.Just(2))</code></pre>
+
+    <h3><code>flatMap</code></h3>
+    <pre><code>flatMap((value) =&gt; Maybe.Just(value * 3), Maybe.Just(2))</code></pre>
+
+    <h2>ADTs</h2>
+
+    <h3><code>Maybe</code></h3>
+    <pre><code>const maybeName = Maybe.fromNullable(user)
+  .map((value) =&gt; value.name)
+  .fold(
+    () =&gt; 'Anonymous',
+    (name) =&gt; name
+  )</code></pre>
+
+    <p>Extra helpers:</p>
+    <pre><code>Maybe.toEither(() =&gt; 'user missing', Maybe.fromNullable(user))
+Maybe.filter((value) =&gt; value.active, Maybe.Just(user))
+Maybe.orElse(() =&gt; Maybe.Just(fallbackUser), Maybe.Nothing())</code></pre>
+
+    <h3><code>Either</code></h3>
+    <pre><code>const parsed = Either.fromThrowable(
+  () =&gt; JSON.parse(input),
+  (error) =&gt; error.message
+)
+
+parsed.fold(
+  (error) =&gt; `Invalid: ${error}`,
+  (value) =&gt; `Loaded ${value.id}`
+)</code></pre>
+  </body>
+</html>
